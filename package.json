@@ -1,0 +1,15 @@
+{
+  "name": "bot-dev",
+  "version": "1.0.0",
+  "description": "Discord bot development enviroment.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jleguim",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.9.0",
+    "dotenv": "^16.0.3"
+  }
+}
