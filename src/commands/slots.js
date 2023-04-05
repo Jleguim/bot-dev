@@ -16,7 +16,7 @@ module.exports.exec = async function(interaction) {
     interaction.editReply({ embeds: [slotEmbed] })
   })
 
-  slot.eventEmitter.on('finished', (won, mult) => {
+  slot.eventEmitter.once('finished', (won, mult) => {
     if (!won) slotEmbed.setColor('Red').defDesc(`You lost $${bet}!\n${slotEmbed.description}`)
     else slotEmbed.setColor('Green').defDesc(`You won $${mult * bet}\n${slotEmbed.description}`)
     interaction.editReply({ embeds: [slotEmbed] })
