@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const Mongoose = require('mongoose')
+const mongoose = require('mongoose')
 
 const Embed = require('../utils/Embed')
 
@@ -7,7 +7,7 @@ module.exports.exec = async function(interaction) {
   var targetUser = interaction.options.getUser('user')
   if (!targetUser) targetUser = interaction.user
 
-  const targetDoc = await Mongoose.models.User.findOrCreate(targetUser.id)
+  const targetDoc = await mongoose.models.User.findOrCreate(targetUser.id)
 
   const balanceEmbed = new Embed().defColor('#7830e5').defDesc(`LeCoins: ${targetDoc.balance}`)
   interaction.reply({ embeds: [balanceEmbed] })

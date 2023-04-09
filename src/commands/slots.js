@@ -1,7 +1,7 @@
 const Embed = require('../utils/Embed')
 const Discord = require('discord.js')
 const TragaMonedas = require('../utils/TragaMonedas')
-const Mongoose = require('mongoose')
+const mongoose = require('mongoose')
 
 var icon =
   'https://cdn.discordapp.com/attachments/1093040865909407809/1093083234058899499/casino-slot-machine-3d-rendering-isometric-icon-png.png'
@@ -13,7 +13,7 @@ module.exports.exec = async function(interaction) {
   const slot = new TragaMonedas()
 
   const userSnowflake = interaction.user.id
-  let userDoc = await Mongoose.models.User.findOne({ snowflake: userSnowflake })
+  let userDoc = await mongoose.models.User.findOne({ snowflake: userSnowflake })
 
   const bet = interaction.options.getNumber('bet')
   if (userDoc.balance < bet) {
