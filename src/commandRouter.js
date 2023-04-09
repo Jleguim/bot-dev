@@ -24,8 +24,6 @@ async function registerCommands() {
 }
 
 async function handleInteractions(interaction) {
-  await interaction.deferReply()
-
   if (!interaction.isCommand()) return
   if (!slashCommands.has(interaction.commandName)) return
 

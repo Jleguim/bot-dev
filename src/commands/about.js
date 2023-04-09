@@ -11,7 +11,7 @@ module.exports.exec = async function(interaction) {
     .defDesc('Este bot literalmente solo cumple la funcion de testear cosas, lol.')
     .defField('Desarollado por', '[Jleguim](https://github.com/Jleguim)')
 
-  return interaction.editReply({ embeds: [aboutEmbed] })
+  return interaction.reply({ embeds: [aboutEmbed] })
 }
 
 module.exports.data = new Discord.SlashCommandBuilder()
