@@ -11,7 +11,7 @@ module.exports.exec = async function(interaction) {
 
   if (interaction.user.id == target.id) {
     const errorEmbed = new Embed().defColor('Red').defDesc('Why did you just try to attack yourself?')
-    interaction.reply({ embeds: [errorEmbed], ephemeral: true })
+    interaction.reply({ embeds: [errorEmbed] })
   }
 
   const targetDoc = await mongoose.models.User.findOrCreate(target.id)
@@ -34,7 +34,7 @@ module.exports.exec = async function(interaction) {
   const attackEmbed = new Embed()
     .defColor('#7830e5')
     .defDesc(`Your attack will be finished ${relativeTime}`)
-  interaction.reply({ embeds: [attackEmbed], ephemeral: true })
+  interaction.reply({ embeds: [attackEmbed] })
 }
 
 module.exports.data = new Discord.SlashCommandBuilder()

@@ -12,7 +12,7 @@ module.exports.exec = async function(interaction) {
 
   if (parsedAttacks.length == 0) {
     const errorEmbed = new Embed().defColor('Red').defDesc('There are no attacks in progress')
-    return interaction.reply({ embeds: [errorEmbed], ephemeral: true })
+    return interaction.reply({ embeds: [errorEmbed] })
   }
 
   const attacksEmbed = new Embed().defColor('#7830e5').defDesc(parsedAttacks)
@@ -22,7 +22,7 @@ module.exports.exec = async function(interaction) {
     .setDisabled(completedAttacks.length == 0 ? true : false)
     .setStyle('Primary')
   const row = new Discord.ActionRowBuilder().addComponents(claimBtn)
-  interaction.reply({ embeds: [attacksEmbed], components: [row], ephemeral: true })
+  interaction.reply({ embeds: [attacksEmbed], components: [row] })
 
   const filter = inter => inter.customId == 'claim-btn' && inter.user.id == interaction.user.id
   const collector = interaction.channel.createMessageComponentCollector({ filter, max: 1 })
@@ -55,7 +55,7 @@ module.exports.exec = async function(interaction) {
     userDoc.hacking.attacks = []
     await userDoc.save()
 
-    btnInteraction.editReply({ content: 'Attacks claimed', ephemeral: true })
+    btnInteraction.editReply({ content: 'Attacks claimed' })
   })
 }
 
