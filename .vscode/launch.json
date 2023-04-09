@@ -7,11 +7,20 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Playground",
+      "name": "Test",
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}\\src\\utils\\test.js"
+      "program": "${workspaceFolder}\\test.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Bot",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}\\src\\index.js"
     }
   ]
 }
