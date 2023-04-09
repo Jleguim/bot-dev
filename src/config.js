@@ -14,5 +14,7 @@ module.exports = {
 
   Token: process.env.DISCORD_BOT_TOKEN,
   ClientID: process.env.DISCORD_CLIENT_ID,
-  DevGuildID: process.env.DISCORD_DEV_GUILD_ID
+  DevGuildID: process.env.DISCORD_DEV_GUILD_ID,
+
+  MongoUri: process.env.MONGO_URI
 }

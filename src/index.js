@@ -8,7 +8,9 @@ if (process.argv[2] == '-r') CommandRouter.registerCommands()
 client.on('interactionCreate', CommandRouter.handleInteractions)
 
 client.login(config.Token)
-client.once('ready', () => {
+client.once('ready', async () => {
   console.log('Hello world!')
+
+  require('./db')
   require('./server')
 })
