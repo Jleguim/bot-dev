@@ -34,7 +34,7 @@ module.exports.exec = async function(interaction) {
       return interaction.editReply({ embeds: [slotEmbed] })
     }
 
-    const winnings = mult * bet
+    const winnings = Math.floor(mult * bet)
     userDoc.balance += winnings
     userDoc.save()
     slotEmbed.setColor('Green').defDesc(`You won $${winnings}\n${slotEmbed.description}`)
