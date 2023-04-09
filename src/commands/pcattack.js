@@ -17,7 +17,7 @@ module.exports.exec = async function(interaction) {
   const targetDoc = await mongoose.models.User.findOrCreate(target.id)
   const userDoc = await mongoose.models.User.findOrCreate(interaction.user.id)
 
-  const attackDuration = userDoc.getSpeed() * AttackTypes[attackType].duration
+  const attackDuration = AttackTypes[attackType].duration / userDoc.getSpeed()
   const attackEndDate = moment().add(attackDuration, 'millisecond').toDate()
 
   const attack = {
