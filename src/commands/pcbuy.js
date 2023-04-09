@@ -24,7 +24,16 @@ module.exports.exec = async function(interaction) {
   } else userDoc.hacking.inventory.push(wantedItem.name)
 
   await userDoc.save()
-  interaction.reply('Part purchased.')
+
+  const purchaseEmbed = new Embed()
+    .defAuthor({
+      text: 'PC Shop',
+      url:
+        'https://media.discordapp.net/attachments/1093040865909407809/1093048807836635196/leguims-closed-mouth.png?width=580&height=580'
+    })
+    .defColor('#7830e5')
+    .defDesc(`You purchased \`${wantedItem.name}\`\n➔ ${wantedItem.desc}`)
+  interaction.reply({ embeds: [purchaseEmbed] })
 }
 
 module.exports.data = new Discord.SlashCommandBuilder()
