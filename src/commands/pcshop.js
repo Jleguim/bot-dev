@@ -7,10 +7,17 @@ const Items = Parts.concat(Software)
 
 module.exports.exec = async function(interaction) {
   const shopText = Items.map((item, index) => {
-    return `\`${index}\` - ${item.name} \n Price: ${item.price}\n`
+    return `\`id: ${index}\` **|** ${item.name} \n ➔ ${item.desc}\n➔ Price: ${item.price}\n\n`
   }).join(' ')
 
-  const shopEmbed = new Embed().defColor('#7830e5').defDesc(shopText)
+  const shopEmbed = new Embed()
+    .defAuthor({
+      text: 'PC Shop',
+      url:
+        'https://media.discordapp.net/attachments/1093040865909407809/1093048807836635196/leguims-closed-mouth.png?width=580&height=580'
+    })
+    .defColor('#7830e5')
+    .defDesc(shopText)
 
   interaction.reply({ embeds: [shopEmbed] })
 }
