@@ -40,7 +40,18 @@ userSchema.method('isAttackableBy', function(attackType) {
   return validItems.length == 0 ? true : false
 })
 
+userSchema.method('getSetupCost', function() {
+  // TODO: Figure out how RAM capacity affects cost
+  const setup = this.hacking.setup
+  var cost = 40
+  cost += setup.cpu_speed * 60
+  if (setup.ethernet) cost += 30
+  if (setup.dual_channel) cost += 50
+  return cost
+})
+
 userSchema.method('getSpeed', function() {
+  // TODO: Figure out how RAM capacity affects speed
   const setup = this.hacking.setup
   var speed = 1
   speed += setup.cpu_speed * 0.09

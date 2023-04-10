@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 
-const config = require('./config')
+const config = require('../config')
 
 try {
   mongoose.connect(config.MongoUri)
 
-  require('./models/User.model')
+  require('./User.model')
 
   console.log('Connected to db')
 } catch (error) {
