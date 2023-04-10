@@ -21,7 +21,7 @@ module.exports = {
             interaction.channel.send({ embeds: [errorEmbed], ephemeral: true })
           }
 
-          var max = targetDoc.balance * 0.4
+          var max = targetDoc.balance * 0.2
           var min = 1
           var stolenAmount = Math.floor(Math.random() * (max - min + 1) + min)
 

@@ -17,7 +17,10 @@ module.exports.exec = async function(interaction) {
 
   const bet = interaction.options.getNumber('bet')
   if (userDoc.balance < bet) {
-    const errorEmbed = new Embed().defColor('Red').defFooter({ text: 'Not enough money to wager.' })
+    // !
+    const errorEmbed = new Embed().defColor('Red').defFooter({
+      text: 'Not enough money to wager.'
+    })
     return interaction.editReply({ embeds: [errorEmbed] })
   }
 

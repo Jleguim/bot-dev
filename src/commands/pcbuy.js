@@ -13,6 +13,7 @@ module.exports.exec = async function(interaction) {
   const wantedItem = Items[itemId]
 
   if (userDoc.balance < wantedItem.price) {
+    // !
     const errorEmbed = new Embed().defColor('Red').defFooter({ text: 'Not enough money.' })
     return interaction.reply({ embeds: [errorEmbed] })
   }

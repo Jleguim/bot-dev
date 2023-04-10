@@ -10,12 +10,19 @@ module.exports.exec = async function(interaction) {
   const target = interaction.options.getUser('user')
 
   if (interaction.user.id == target.id) {
+    // !
     const errorEmbed = new Embed().defColor('Red').defDesc('Why did you just try to attack yourself?')
     interaction.reply({ embeds: [errorEmbed] })
   }
 
   const targetDoc = await mongoose.models.User.findOrCreate(target.id)
   const userDoc = await mongoose.models.User.findOrCreate(interaction.user.id)
+
+  const attackCost = userDoc.getSetupCost()
+  if (userDoc.balance < attackCost) {
+    const errorEmbed = new Embed().defColor('Red').defFooter({ text: 'Not enough money to attack' })
+    return interaction.reply({ embeds: [errorEmbed] })
+  }
 
   const attackDuration = AttackTypes[attackType].duration / userDoc.getSpeed()
   const attackEndDate = moment().add(attackDuration, 'millisecond').toDate()
@@ -28,12 +35,14 @@ module.exports.exec = async function(interaction) {
   }
 
   userDoc.hacking.attacks.push(attack)
+  userDoc.balance -= attackCost
   await userDoc.save()
 
   const relativeTime = Discord.time(attack.endDate, 'R')
   const attackEmbed = new Embed()
     .defColor('#7830e5')
     .defDesc(`Your attack will be finished ${relativeTime}`)
+    .defFooter({ text: `You got charged $${attackCost} for this attack` })
   interaction.reply({ embeds: [attackEmbed] })
 }
 
