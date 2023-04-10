@@ -47,12 +47,15 @@ module.exports.exec = async function(interaction) {
         return btnInteraction.channel.send({ embeds: [failedEmbed] })
       }
 
+      attack.userDoc = userDoc
+      attack.targetDoc = targetDoc
+
       const outcome = attack.randomOutcome
-      await outcome.func(interaction, attack, userDoc)
+      await outcome.func(interaction, attack)
     })
 
     await Promise.all(promiseArray)
-    userDoc.hacking.attacks = []
+    userDoc.hacking.attacks = [] // this is wrong lol
     await userDoc.save()
 
     btnInteraction.editReply({ content: 'Attacks claimed' })
@@ -61,4 +64,4 @@ module.exports.exec = async function(interaction) {
 
 module.exports.data = new Discord.SlashCommandBuilder()
   .setName('pcattacks')
-  .setDescription('Get hardware and software for your pc.')
+  .setDescription("Check on the attacks you've made.")

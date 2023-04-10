@@ -1,39 +1,18 @@
-const mongoose = require('mongoose')
 const moment = require('moment')
 
-const Embed = require('../Embed')
+const Outcomes = require('./Outcomes')
 
 module.exports = {
   Virus: {
     duration: moment.duration(15, 'seconds'),
     successRate: 0.8,
     defendedBy: ['Antivirus'],
-    outcomes: [
-      {
-        name: 'Money',
-        func: async function(interaction, attack, userDoc) {
-          const targetDoc = await mongoose.models.User.findOrCreate(attack.target)
-
-          if (targetDoc.balance <= 0) {
-            const errorEmbed = new Embed()
-              .defColor('Red')
-              .defDesc('You got access to their wallet but theyre broke')
-            interaction.channel.send({ embeds: [errorEmbed], ephemeral: true })
-          }
-
-          var max = targetDoc.balance * 0.2
-          var min = 1
-          var stolenAmount = Math.floor(Math.random() * (max - min + 1) + min)
-
-          userDoc.balance += stolenAmount
-          targetDoc.balance -= stolenAmount
-
-          await targetDoc.save()
-
-          const embed = new Embed().defDesc(`You stole ${stolenAmount}`)
-          return interaction.channel.send({ embeds: [embed] })
-        }
-      }
-    ]
+    outcomes: [Outcomes.Money, Outcomes.Item]
+  },
+  Phishing: {
+    duration: moment.duration(15, 'seconds'),
+    successRate: 0.8,
+    defendedBy: ['AdBlocker', 'Detector'],
+    outcomes: [Outcomes.Money, Outcomes.Item]
   }
 }

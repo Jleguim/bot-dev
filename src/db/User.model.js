@@ -40,6 +40,11 @@ userSchema.method('isAttackableBy', function(attackType) {
   return validItems.length == 0 ? true : false
 })
 
+userSchema.method('getRandomItem', function() {
+  const randomIndex = Math.floor(Math.random() * this.hacking.inventory.length)
+  return this.hacking.inventory[randomIndex]
+})
+
 userSchema.method('getSetupCost', function() {
   // TODO: Figure out how RAM capacity affects cost
   const setup = this.hacking.setup

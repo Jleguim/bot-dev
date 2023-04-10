@@ -53,7 +53,7 @@ module.exports.data = new Discord.SlashCommandBuilder()
     option
       .setName('type')
       .setDescription('The type of attack')
-      .addChoices({ name: 'Virus', value: 'Virus' })
+      .addChoices({ name: 'Virus', value: 'Virus' }, { name: 'Phishing scam', value: 'Phishing' })
       .setRequired(true)
   )
   .addUserOption(option => option.setName('user').setDescription('The user to attack').setRequired(true))
