@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 const moment = require('moment')
 
 const Embed = require('../utils/Embed')
-const AttackTypes = require('../utils/hacking/AttackTypes')
 
 module.exports.exec = async function(interaction) {
   const attackType = interaction.options.getString('type')
@@ -12,7 +11,7 @@ module.exports.exec = async function(interaction) {
   if (interaction.user.id == target.id) {
     // !
     const errorEmbed = new Embed().defColor('Red').defDesc('Why did you just try to attack yourself?')
-    interaction.reply({ embeds: [errorEmbed] })
+    return interaction.reply({ embeds: [errorEmbed] })
   }
 
   const targetDoc = await mongoose.models.User.findOrCreate(target.id)
@@ -24,19 +23,16 @@ module.exports.exec = async function(interaction) {
     return interaction.reply({ embeds: [errorEmbed] })
   }
 
-  const attackDuration = AttackTypes[attackType].duration / userDoc.getSpeed()
-  const attackEndDate = moment().add(attackDuration, 'millisecond').toDate()
+  const attack = await mongoose.models.Attack.create({ type: attackType, targetDoc, userDoc })
+  const attackDuration = attack.data.duration / userDoc.getSpeed()
 
-  const attack = {
-    target: targetDoc.snowflake,
-    type: attackType,
-    endDate: attackEndDate,
-    startDate: moment().toDate()
-  }
+  attack.startDate = moment().toDate()
+  attack.endDate = moment().add(attackDuration, 'millisecond').toDate()
 
   userDoc.hacking.attacks.push(attack)
   userDoc.balance -= attackCost
   await userDoc.save()
+  await attack.save()
 
   const relativeTime = Discord.time(attack.endDate, 'R')
   const attackEmbed = new Embed()

@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 
+const Attack = require('../utils/hacking/Attack')
 const AttackTypes = require('../utils/hacking/AttackTypes')
+const ObjectId = mongoose.Types.ObjectId
 
 var userSchema = new mongoose.Schema({
   snowflake: { type: String, required: true },
@@ -13,11 +15,10 @@ var userSchema = new mongoose.Schema({
       ram_capacity: { type: Number, required: true, default: 2 }
     },
     inventory: [],
-    attacks: []
+    attacks: [{ type: ObjectId, ref: 'Attack' }]
   }
 })
 
-const Attack = require('../utils/hacking/Attack')
 userSchema.method('mapAttacks', function() {
   const attacksArray = this.hacking.attacks
   const attacks = attacksArray.map(doc => new Attack(doc))

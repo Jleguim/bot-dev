@@ -5,17 +5,25 @@ const Embed = require('../utils/Embed')
 
 module.exports.exec = async function(interaction) {
   const userDoc = await mongoose.models.User.findOrCreate(interaction.user.id)
+  const attacks = userDoc.hacking.attacks
 
-  const attacks = userDoc.mapAttacks()
+  await userDoc.populate('hacking.attacks')
+  await Promise.all(
+    attacks.map(async attack => {
+      await attack.populate('targetDoc')
+      await attack.populate('userDoc')
+    })
+  )
+
   const completedAttacks = attacks.filter(a => a.isComplete)
-  const parsedAttacks = attacks.map(a => a.parsedData).join('')
+  const parsedData = attacks.map(a => a.parsedData).join('')
 
-  if (parsedAttacks.length == 0) {
+  if (parsedData.length == 0) {
     const errorEmbed = new Embed().defColor('Red').defDesc('There are no attacks in progress')
     return interaction.reply({ embeds: [errorEmbed] })
   }
 
-  const attacksEmbed = new Embed().defColor('#7830e5').defDesc(parsedAttacks)
+  const attacksEmbed = new Embed().defColor('#7830e5').defDesc(parsedData)
   const claimBtn = new Discord.ButtonBuilder()
     .setCustomId('claim-btn')
     .setLabel('Claim')
@@ -31,11 +39,9 @@ module.exports.exec = async function(interaction) {
     await btnInteraction.deferReply()
     collector.stop()
 
-    const promiseArray = completedAttacks.map(async attack => {
-      const targetDoc = await mongoose.models.User.findOrCreate(attack.target)
-
-      if (!targetDoc.isAttackableBy(attack.type)) {
-        targetDoc.useDefenderItem(attack.type)
+    completedAttacks.forEach(async attack => {
+      if (!attack.targetDoc.isAttackableBy(attack.type)) {
+        attack.targetDoc.useDefenderItem(attack.type)
         await targetDoc.save()
 
         const failedEmbed = new Embed().defColor('Red').defDesc('Attack failed because of item')
@@ -47,16 +53,15 @@ module.exports.exec = async function(interaction) {
         return btnInteraction.channel.send({ embeds: [failedEmbed] })
       }
 
-      attack.userDoc = userDoc
-      attack.targetDoc = targetDoc
+      await mongoose.models.Attack.deleteOne({ _id: attack._id })
+      userDoc.hacking.attacks = userDoc.hacking.attacks.filter(a => a._id == attack._id)
 
       const outcome = attack.randomOutcome
       await outcome.func(interaction, attack)
+      await userDoc.save()
     })
 
-    await Promise.all(promiseArray)
-    userDoc.hacking.attacks = [] // this is wrong lol
-    await userDoc.save()
+    // await userDoc.save()
 
     btnInteraction.editReply({ content: 'Attacks claimed' })
   })
