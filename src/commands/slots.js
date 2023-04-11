@@ -16,7 +16,7 @@ module.exports.exec = async function(interaction) {
   let userDoc = await mongoose.models.User.findOne({ snowflake: userSnowflake })
 
   const bet = interaction.options.getNumber('bet')
-  if (userDoc.balance < bet) {
+  if (userDoc.hasBalance(bet)) {
     // !
     const errorEmbed = new Embed().defColor('Red').defFooter({
       text: 'Not enough money to wager.'
@@ -29,17 +29,17 @@ module.exports.exec = async function(interaction) {
     interaction.editReply({ embeds: [slotEmbed] })
   })
 
-  slot.eventEmitter.once('finished', (won, mult) => {
+  slot.eventEmitter.once('finished', async (won, mult) => {
     if (!won) {
+      await userDoc.deductBalance(bet)
+
       slotEmbed.setColor('Red').defDesc(`You lost $${bet}!\n${slotEmbed.description}`)
-      userDoc.balance -= bet
-      userDoc.save()
       return interaction.editReply({ embeds: [slotEmbed] })
     }
 
     const winnings = Math.floor(mult * bet)
-    userDoc.balance += winnings
-    userDoc.save()
+    await userDoc.addBalance(winnings)
+
     slotEmbed.setColor('Green').defDesc(`You won $${winnings}\n${slotEmbed.description}`)
     return interaction.editReply({ embeds: [slotEmbed] })
   })

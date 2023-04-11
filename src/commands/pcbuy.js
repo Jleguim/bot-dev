@@ -12,19 +12,15 @@ module.exports.exec = async function(interaction) {
   const itemId = interaction.options.getNumber('id')
   const wantedItem = Items[itemId]
 
-  if (userDoc.balance < wantedItem.price) {
+  if (userDoc.hasBalance(wantedItem.price)) {
     // !
     const errorEmbed = new Embed().defColor('Red').defFooter({ text: 'Not enough money.' })
     return interaction.reply({ embeds: [errorEmbed] })
   }
 
   if (wantedItem.hasOwnProperty('modifiers')) {
-    wantedItem.modifiers.forEach(modifier => {
-      userDoc.hacking.setup[modifier.key] = modifier.value
-    })
-  } else userDoc.hacking.inventory.push(wantedItem.name)
-
-  await userDoc.save()
+    await Promise.all(wantedItem.modifiers.map(UserDoc.applyModifier))
+  } else await userDoc.appendInventory(wantedItem.name)
 
   const purchaseEmbed = new Embed()
     .defAuthor({

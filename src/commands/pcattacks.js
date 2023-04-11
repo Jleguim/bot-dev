@@ -40,9 +40,8 @@ module.exports.exec = async function(interaction) {
     collector.stop()
 
     completedAttacks.forEach(async attack => {
-      if (!attack.targetDoc.isAttackableBy(attack.type)) {
-        attack.targetDoc.useDefenderItem(attack.type)
-        await targetDoc.save()
+      if (!attack.targetDoc.isProtectedAgainst(attack.type)) {
+        await attack.targetDoc.useProtectionItem(attack.type)
 
         const failedEmbed = new Embed().defColor('Red').defDesc('Attack failed because of item')
         return btnInteraction.channel.send({ embeds: [failedEmbed] })
@@ -60,8 +59,6 @@ module.exports.exec = async function(interaction) {
       await outcome.func(interaction, attack)
       await userDoc.save()
     })
-
-    // await userDoc.save()
 
     btnInteraction.editReply({ content: 'Attacks claimed' })
   })

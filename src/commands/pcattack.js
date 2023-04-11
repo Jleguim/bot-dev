@@ -17,22 +17,20 @@ module.exports.exec = async function(interaction) {
   const targetDoc = await mongoose.models.User.findOrCreate(target.id)
   const userDoc = await mongoose.models.User.findOrCreate(interaction.user.id)
 
-  const attackCost = userDoc.getSetupCost()
-  if (userDoc.balance < attackCost) {
+  if (userDoc.hasBalance(userDoc.setupCost)) {
     const errorEmbed = new Embed().defColor('Red').defFooter({ text: 'Not enough money to attack' })
     return interaction.reply({ embeds: [errorEmbed] })
   }
 
   const attack = await mongoose.models.Attack.create({ type: attackType, targetDoc, userDoc })
-  const attackDuration = attack.data.duration / userDoc.getSpeed()
+  const attackDuration = attack.data.duration / userDoc.setupSpeed
 
   attack.startDate = moment().toDate()
   attack.endDate = moment().add(attackDuration, 'millisecond').toDate()
-
-  userDoc.hacking.attacks.push(attack)
-  userDoc.balance -= attackCost
-  await userDoc.save()
   await attack.save()
+
+  await userDoc.appendAttack(attack)
+  await userDoc.deductBalance(userDoc.setupCost)
 
   const relativeTime = Discord.time(attack.endDate, 'R')
   const attackEmbed = new Embed()
